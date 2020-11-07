@@ -1,21 +1,29 @@
 package com.udacity.jwdnd.course1.cloudstorage.model;
 
+import java.security.SecureRandom;
+import java.util.Base64;
+
 public class Credential {
 
     private Integer credentialId;
     private String url;
     private String username;
+
     private String key;
     private String password;
     private Integer userId;
 
-    public Credential(String url, String username, String key, String password, Integer userId) {
+    public Credential(String url, String username, String password, Integer userId) {
         this.url = url;
         this.username = username;
-        this.key = key;
         this.password = password;
         this.userId = userId;
     }
+
+    public Credential() {
+        // For Mappers
+    }
+
 
     public Integer getCredentialId() {
         return credentialId;
@@ -64,4 +72,7 @@ public class Credential {
     public void setUserId(Integer userId) {
         this.userId = userId;
     }
+
+
+
 }

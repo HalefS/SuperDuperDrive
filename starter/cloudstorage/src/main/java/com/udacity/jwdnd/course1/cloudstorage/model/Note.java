@@ -12,8 +12,16 @@ public class Note {
         this.noteDescription = noteDescription;
     }
 
+    public Note(){
+        // for object bindings
+    }
+
     public Integer getNoteId() {
         return noteId;
+    }
+
+    public void setNoteId(int id) {
+        this.noteId = id;
     }
 
     public void setNoteId(Integer noteId) {

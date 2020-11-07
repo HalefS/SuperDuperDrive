@@ -1,0 +1,7 @@
+{
+  "books": [
+    {"title": "Java Fundamentals", "author": "Halef Spencer"},
+    {"title":  "Head First Go", "author":  "Joshua Bloch"},
+    {"title": "Effective Java", "author": "Hoshua Bloch"}
+  ]
+}

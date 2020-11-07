@@ -15,6 +15,10 @@ public class File {
         this.fileData = data;
     }
 
+    public File() {
+        // for object bindings
+    }
+
     public Integer getFileId() {
         return fileId;
     }
