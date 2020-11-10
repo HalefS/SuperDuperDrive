@@ -4,6 +4,8 @@ import com.udacity.jwdnd.course1.cloudstorage.model.Credential;
 import com.udacity.jwdnd.course1.cloudstorage.service.CredentialService;
 import com.udacity.jwdnd.course1.cloudstorage.service.EncryptionService;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,7 +29,8 @@ public class EncryptionController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Map<String, String> decodePassword(@RequestParam("credentialId") int id) {
+    @PreAuthorize("@userService.getUsernameFromId(@credentialService.getUserId(#id)).equals(#authentication.getName())")
+    public Map<String, String> decodePassword(@RequestParam("credentialId") int id, Authentication authentication) {
         Credential credential = credentialService.getById(id);
         Map<String, String> decodedPassword = new HashMap<>();
         decodedPassword.put("password", encryptionService.decryptValue(credential.getPassword(), credential.getKey()));

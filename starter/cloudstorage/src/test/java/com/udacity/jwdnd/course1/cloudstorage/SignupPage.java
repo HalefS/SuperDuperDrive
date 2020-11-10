@@ -13,13 +13,21 @@ public class SignupPage {
     @FindBy(id = "inputLastName")
     private WebElement inputLastName;
 
+    @FindBy(id = "inputUsername")
+    private WebElement inputUsername;
+
+    @FindBy(id = "inputPassword")
+    private WebElement inputPassword;
+
     public SignupPage(WebDriver driver) {
         PageFactory.initElements(driver, this);
     }
 
-    public void singup(String firstName, String lastName) {
-        inputFirstName.sendKeys(firstName);
-        inputLastName.sendKeys(lastName);
+    public void singup(String username, String password) {
+        inputFirstName.sendKeys("user");
+        inputLastName.sendKeys("user");
+        inputPassword.sendKeys(password);
+        inputUsername.sendKeys(username);
         inputLastName.submit();
     }
 }

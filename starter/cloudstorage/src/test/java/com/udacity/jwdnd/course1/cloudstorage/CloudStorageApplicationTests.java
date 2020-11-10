@@ -15,6 +15,10 @@ class CloudStorageApplicationTests {
 	private int port;
 
 	private WebDriver driver;
+	private LoginPage loginPage;
+	private HomePage homePage;
+	private SignupPage signupPage;
+	private ResultPage resultPage;
 
 	@BeforeAll
 	static void beforeAll() {
@@ -24,6 +28,10 @@ class CloudStorageApplicationTests {
 	@BeforeEach
 	public void beforeEach() {
 		this.driver = new ChromeDriver();
+		loginPage = new LoginPage(driver);
+		signupPage = new SignupPage(driver);
+		homePage = new HomePage(driver);
+		resultPage = new ResultPage(driver);
 	}
 
 	@AfterEach
@@ -34,16 +42,91 @@ class CloudStorageApplicationTests {
 	}
 
 	@Test
-	public void getLoginPage() {
-		driver.get("http://localhost:" + this.port + "/login");
+	public void unauthorizedUserTest() {
+		driver.get("http://localhost:" + port + "/files");
+		assertEquals(driver.getTitle(), "Login");
+		navigateTo("login");
+		assertEquals(driver.getTitle(), "Login");
+		driver.get("http://localhost:" + port + "/credentials");
+		assertEquals(driver.getTitle(), "Login");
+	}
+
+	@Test
+	public void loginPageTest() {
+		navigateTo("login");
 		assertEquals("Login", driver.getTitle());
 	}
 
 	@Test
-	public void getSignupPage() {
-		driver.get("http://localhost:" + this.port + "/signup");
-		assertEquals("Signup", driver.getTitle());
+	public void unregisteredUserLoginTest() {
+		loginPage = new LoginPage(driver);
+		navigateTo("login");
+		loginPage.login("username", "password");
+		assertTrue(loginPage.loginFailed(driver));
+	}
 
+	@Test
+	public void loginLogoutTest() {
+		loginPage = new LoginPage(driver);
+		signupPage = new SignupPage(driver);
+		homePage = new HomePage(driver);
+		navigateTo("signup");
+		signupPage.singup("user", "user");
+		navigateTo("login");
+		loginPage.login("user", "user");
+		navigateTo("");
+		homePage.logout();
+		assertEquals("Login", driver.getTitle());
+
+	}
+
+	@Test
+	public void userRegistrationTest() {
+		signupPage = new SignupPage(driver);
+		navigateTo("signup");
+		signupPage.singup("signup", "signup");
+		loginPage = new LoginPage(driver);
+		navigateTo("login");
+		loginPage.login("signup", "signup");
+		assertEquals("Home", driver.getTitle());
+	}
+
+	@Test
+	public void signupTest() {
+		navigateTo("signup");
+		assertEquals("Sign Up", driver.getTitle());
+	}
+
+	@Test
+	public void noteCreationTest() {
+		signUpAndLogin("user", "example");
+		String noteTitle = "example";
+		String noteDescription = "exampleDescription";
+		homePage.createNote(noteTitle, noteDescription, driver);
+		resultPage.OK();
+		assertTrue(homePage.noteExists(noteTitle, driver));
+	}
+
+	@Test
+	public void noteEditionTest() throws Exception {
+		signUpAndLogin("example", "user");
+		homePage.createNote("example", "example", driver);
+		resultPage.OK();
+		assertTrue(homePage.noteExists("example", driver));
+		homePage.editNote(driver,"title", "example", "exampleEdit");
+		resultPage.OK();
+		assertTrue(homePage.noteExists("exampleEdit", driver));
+	}
+
+	public void signUpAndLogin(String username, String password) {
+		navigateTo("signup");
+		signupPage.singup(username, password);
+		navigateTo("login");
+		loginPage.login(username, password);
+	}
+	
+	private void navigateTo(String endpoint) {
+		driver.navigate().to(String.format("http://localhost:%d/%s", port, endpoint));
 	}
 
 }

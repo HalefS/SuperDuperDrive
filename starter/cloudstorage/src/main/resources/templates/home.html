@@ -35,7 +35,7 @@
                                         <input type="file" class="form-control-file" id="fileUpload" name="fileUpload">
                                     </div>
                                     <div class="col-sm-4">
-                                        <button type="submit" class="btn btn-dark">Upload</button>
+                                        <button id="file-submit" type="submit" class="btn btn-dark">Upload</button>
                                     </div>
                                 </div>
                             </div>
@@ -50,8 +50,8 @@
                                 </thead>
                                 <tbody>
                                 <tr  th:each="file : ${files}">
-                                    <td>
-                                        <a th:href="@{/files/} + ${file.fileId} + '/view'" target="_blank" class="btn btn-success">View</a>
+                                    <td th:id="${file.filename}">
+                                        <a id="viewButton" th:href="@{/files/} + ${file.fileId} + '/view'" target="_blank" class="btn btn-success">View</a>
                                         <a th:href="@{/files/} + ${file.fileId} + '/delete'" class="btn btn-danger">Delete</a>
                                     </td >
                                     <th th:text="${file.filename}" scope="row">ExampleFile.txt</th>
@@ -61,12 +61,12 @@
                         </div>
                     </div>
                     <div class="tab-pane fade" id="nav-notes" role="tabpanel" aria-labelledby="nav-notes-tab">
-                        <button style="margin: 0.25em;" type="button" class="btn btn-info float-right" onclick="showNoteModal()">
+                        <button id="addNote" style="margin: 0.25em;" type="button" class="btn btn-info float-right" onclick="showNoteModal()">
                             + Add a New Note
                         </button>
 
                         <div class="table-responsive">
-                            <table class="table table-striped" id="userTable">
+                            <table class="table table-striped" id="notesTable">
                                 <thead>
                                     <tr>
                                         <th style="width: 20%" scope="col"></th>
@@ -77,13 +77,13 @@
                                 <tbody>
                                     <tr th:each="note : ${notes}">
                                         <td>
-                                            <button type="button" class="btn btn-success"
+                                            <button th:id="${note.noteTitle} + 'edit'" type="button" class="btn btn-success"
                                                     th:attr="data-id=${note.noteId}, data-title=${note.noteTitle}, data-desc=${note.noteDescription}"
                                                     th:onclick="showNoteModal(this.getAttribute('data-id'), this.getAttribute('data-title'), this.getAttribute('data-desc'));">Edit</button>
                                             <a th:href="@{/notes/} + ${note.noteId} + '/delete'" class="btn btn-danger">Delete</a>
                                         </td>
-                                        <th th:text="${note.noteTitle}" scope="row">Example Note Title</th>
-                                        <td th:text="${note.noteDescription}">Example Note Description </td>
+                                        <th th:id="${note.noteTitle}" th:text="${note.noteTitle}" scope="row">Example Note Title</th>
+                                        <td th:id="${note.noteDescription}" th:text="${note.noteDescription}">Example Note Description </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -114,7 +114,7 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                        <button type="button" class="btn btn-primary" onclick="$('#noteSubmit').click();">Save changes</button>
+                                        <button id="notesModalSubmit" type="button" class="btn btn-primary" onclick="$('#noteSubmit').click();">Save changes</button>
                                     </div>
                                 </div>
                             </div>
@@ -140,7 +140,8 @@
                                     <td>
                                         <button type="button" class="btn btn-success"
                                                 th:attr="data-id=${credential.credentialId}, data-url=${credential.url}, data-username=${credential.username}, data-password=${credential.password}"
-                                                th:onclick="showCredentialModal(this.getAttribute('data-id'), this.getAttribute('data-url'), this.getAttribute('data-username'), this.getAttribute('data-password'));">Edit</button>
+                                                th:onclick="showCredentialModal(this.getAttribute('data-id'), this.getAttribute('data-url'), this.getAttribute('data-username'), this.getAttribute('data-password'));">
+                                            <i class="fa fa-trash-o"></i>Edit</button>
                                         <a th:href="@{/credentials/} + ${credential.credentialId} + '/delete'" class="btn btn-danger">Delete</a>
                                     </td>
                                     <th th:text="${credential.url}" scope="row">Example Credential URL</th>

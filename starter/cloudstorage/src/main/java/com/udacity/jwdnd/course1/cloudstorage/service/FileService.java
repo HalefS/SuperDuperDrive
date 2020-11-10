@@ -43,4 +43,9 @@ public class FileService {
         return fileMapper.getAllFilesForUser(userId);
     }
 
+    public int getUserId(int fileId) {
+        Integer userId = fileMapper.findById(fileId).getUserId();
+        return userId != null ? userId : 0;
+    }
+
 }

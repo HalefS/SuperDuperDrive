@@ -1,5 +1,6 @@
 package com.udacity.jwdnd.course1.cloudstorage;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -13,6 +14,7 @@ public class LoginPage {
     @FindBy(id = "inputPassword")
     private WebElement inputPassword;
 
+
     public LoginPage(WebDriver driver) {
         PageFactory.initElements(driver, this);
     }
@@ -21,5 +23,10 @@ public class LoginPage {
         inputPassword.sendKeys(password);
         inputUsername.sendKeys(username);
         inputUsername.submit();
+    }
+
+    public boolean loginFailed(WebDriver driver) {
+        WebElement errorBanner = driver.findElement(By.id("login-error"));
+        return errorBanner.getText().equals("Invalid username or password");
     }
 }

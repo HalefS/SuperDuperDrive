@@ -4,6 +4,7 @@ package com.udacity.jwdnd.course1.cloudstorage.controller;
 import com.udacity.jwdnd.course1.cloudstorage.model.Note;
 import com.udacity.jwdnd.course1.cloudstorage.service.NoteService;
 import com.udacity.jwdnd.course1.cloudstorage.service.UserService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,6 @@ public class NoteController {
         if (note.getNoteId() != null) {
             noteService.update(note);
             redirectAttributes.addFlashAttribute("success", true);
-            redirectAttributes.addFlashAttribute("section", "#nav-notes");
             return new RedirectView("/result");
         }
 
@@ -39,13 +39,12 @@ public class NoteController {
             redirectAttributes.addFlashAttribute("success", true);
         else
             redirectAttributes.addFlashAttribute("success", false);
-
-        redirectAttributes.addFlashAttribute("section", "#nav-notes");
         return new RedirectView("/result");
     }
 
     @GetMapping("/{id}/delete")
-    public RedirectView deleteNote(@PathVariable int id, RedirectAttributes redirectAttributes) {
+    @PreAuthorize("@userService.getUsernameFromId(@noteService.getUserId(#id)).equals(#authentication.getName())")
+    public RedirectView deleteNote(@PathVariable int id, RedirectAttributes redirectAttributes, Authentication authentication) {
         Note note = noteService.get(id);
         if(note != null) {
             noteService.delete(id);
@@ -54,9 +53,7 @@ public class NoteController {
         else {
             redirectAttributes.addFlashAttribute("success", false);
         }
-        redirectAttributes.addFlashAttribute("section", "#nav-notes");
         return new RedirectView("/result");
     }
-
 
 }

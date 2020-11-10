@@ -8,6 +8,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +22,8 @@ import java.io.IOException;
 @RequestMapping("/files")
 public class FileController {
 
-    FileService fileService;
-    UserService userService;
+    private final FileService fileService;
+    private final UserService userService;
 
     public FileController(FileService fileService, UserService userService) {
         this.fileService = fileService;
@@ -30,7 +31,8 @@ public class FileController {
     }
 
     @GetMapping("/{id}/view")
-    public ResponseEntity<ByteArrayResource> viewFile(@PathVariable int id) {
+    @PreAuthorize("@userService.getUsernameFromId(@fileService.getUserId(#id)).equals(#authentication.getName())")
+    public ResponseEntity<ByteArrayResource> viewFile(@PathVariable int id, Authentication authentication) {
         File file = fileService.getById(id);
         if (file != null) {
             return ResponseEntity.ok()
@@ -43,11 +45,20 @@ public class FileController {
         return null;
     }
 
+    /**
+     * Deletes specific file using pathvariable id
+     * uses @PreAuthorize annotation to make sure the user
+     * has ownership of the mentioned resource
+     * @param id resource id
+     * @param redirectAttributes for flash messages
+     * @param authentication authentication
+     * @return resulting view
+     */
     @GetMapping("/{id}/delete")
+    @PreAuthorize("@userService.getUsernameFromId(@fileService.getUserId(#id)).equals(#authentication.getName())")
     public RedirectView deleteFile(@PathVariable int id, RedirectAttributes redirectAttributes, Authentication authentication) {
         boolean result = fileService.delete(id);
         redirectAttributes.addFlashAttribute("success", result);
-        redirectAttributes.addFlashAttribute("section", "#nav-files");
         return new RedirectView("/result");
     }
 
