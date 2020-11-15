@@ -27,6 +27,12 @@ public class EncryptionController {
         this.credentialService = credentialService;
     }
 
+    /**
+     * Returns the decoded password for the requested credential
+     * @param id Credential id
+     * @param authentication current authenticated user
+     * @return decoded password (plain text password)
+     */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     @PreAuthorize("@userService.getUsernameFromId(@credentialService.getUserId(#id)).equals(#authentication.getName())")

@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class CloudStorageApplicationTests {
 
+
 	@LocalServerPort
 	private int port;
 
@@ -43,11 +44,11 @@ class CloudStorageApplicationTests {
 
 	@Test
 	public void unauthorizedUserTest() {
-		driver.get("http://localhost:" + port + "/files");
+		navigateTo("files");
 		assertEquals(driver.getTitle(), "Login");
 		navigateTo("login");
 		assertEquals(driver.getTitle(), "Login");
-		driver.get("http://localhost:" + port + "/credentials");
+		navigateTo("credentials");
 		assertEquals(driver.getTitle(), "Login");
 	}
 
@@ -102,20 +103,29 @@ class CloudStorageApplicationTests {
 		signUpAndLogin("user", "example");
 		String noteTitle = "example";
 		String noteDescription = "exampleDescription";
-		homePage.createNote(noteTitle, noteDescription, driver);
+		homePage.createNote(noteTitle, noteDescription);
 		resultPage.OK();
-		assertTrue(homePage.noteExists(noteTitle, driver));
+		assertTrue(homePage.noteExists(noteTitle));
 	}
 
 	@Test
-	public void noteEditionTest() throws Exception {
+	public void credentialCreationTest() {
+		signUpAndLogin("user", "password");
+		String url = "github.com";
+		homePage.createCredential(url, "HalefS", "password", driver);
+		resultPage.OK();
+		assertTrue(homePage.credentialExists(url));
+	}
+
+	@Test
+	public void noteEditionTest() {
 		signUpAndLogin("example", "user");
-		homePage.createNote("example", "example", driver);
+		homePage.createNote("example", "example");
 		resultPage.OK();
-		assertTrue(homePage.noteExists("example", driver));
-		homePage.editNote(driver,"title", "example", "exampleEdit");
+		assertTrue(homePage.noteExists("example"));
+		homePage.editNote("title", "example", "exampleEdit");
 		resultPage.OK();
-		assertTrue(homePage.noteExists("exampleEdit", driver));
+		assertTrue(homePage.noteExists("exampleEdit"));
 	}
 
 	public void signUpAndLogin(String username, String password) {

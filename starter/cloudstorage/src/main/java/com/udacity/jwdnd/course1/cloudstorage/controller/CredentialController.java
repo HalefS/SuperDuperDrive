@@ -13,6 +13,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 
+/**
+ * Credential controller manages all the routes related to managing the credentials
+ * on our database (create, delete, update)
+ */
 @Controller
 @RequestMapping("/credentials")
 public class CredentialController {
@@ -27,6 +31,13 @@ public class CredentialController {
         this.encryptionService = encryptionService;
     }
 
+    /**
+     * Add a new credential to the database
+     * @param credential credential object from the view
+     * @param redirectAttributes for redirect info
+     * @param authentication curent authenticated authority
+     * @return result view
+     */
     @PostMapping
     public RedirectView addCredential(@ModelAttribute Credential credential, RedirectAttributes redirectAttributes, Authentication authentication) {
         // Credential already exists, because IDs are generate by the database
@@ -47,6 +58,13 @@ public class CredentialController {
         return new RedirectView("/result");
     }
 
+    /**
+     * Remove a credential from the database based on the credentials id
+     * @param id Credential id
+     * @param redirectAttributes redeirect info
+     * @param authentication current authenticated user
+     * @return result view
+     */
     @GetMapping("/{id}/delete")
     @PreAuthorize("@userService.getUsernameFromId(@credentialService.getUserId(#id)).equals(#authentication.getName())")
     public RedirectView deleteCredential(@PathVariable int id, RedirectAttributes redirectAttributes, Authentication authentication) {
@@ -55,6 +73,11 @@ public class CredentialController {
         return new RedirectView("/result");
     }
 
+    /**
+     * update a credential on the database, url, username or password
+     * @param credential credential object
+     * @param redirectAttributes redirect info
+     */
     private void updateCredential(Credential credential, RedirectAttributes redirectAttributes) {
         // We need the old key, because it is not shared on the views for security reasons
         String key = credentialService.getById(credential.getCredentialId()).getKey();

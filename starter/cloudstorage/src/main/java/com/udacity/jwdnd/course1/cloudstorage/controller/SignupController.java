@@ -24,12 +24,23 @@ public class SignupController {
         this.userService = userService;
     }
 
+    /**
+     * Signup form view
+     * @param model Model
+     * @return login redirect
+     */
     @GetMapping
     public String signupView(Model model) {
         model.addAttribute("userForm", new User());
         return "signup";
     }
 
+    /**
+     * Sign up user to the database, storing passwords securely on our database
+     * @param user User boject from view
+     * @param model Model map
+     * @return login page
+     */
     @PostMapping()
     public String signupUser(@ModelAttribute("userForm") User user, Model model) {
         // Error message to be displayed on template

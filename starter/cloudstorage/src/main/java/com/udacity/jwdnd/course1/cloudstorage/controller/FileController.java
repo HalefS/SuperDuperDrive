@@ -30,6 +30,12 @@ public class FileController {
         this.userService = userService;
     }
 
+    /**
+     * Returns the the file to the user (download, in-browser preview)
+     * @param id file id
+     * @param authentication current authenticated user
+     * @return file
+     */
     @GetMapping("/{id}/view")
     @PreAuthorize("@userService.getUsernameFromId(@fileService.getUserId(#id)).equals(#authentication.getName())")
     public ResponseEntity<ByteArrayResource> viewFile(@PathVariable int id, Authentication authentication) {
@@ -46,7 +52,7 @@ public class FileController {
     }
 
     /**
-     * Deletes specific file using pathvariable id
+     * Deletes specific file using path variable id
      * uses @PreAuthorize annotation to make sure the user
      * has ownership of the mentioned resource
      * @param id resource id
@@ -62,6 +68,13 @@ public class FileController {
         return new RedirectView("/result");
     }
 
+    /**
+     * Uploads new file to the database
+     * @param fileUpload file to upload
+     * @param redirectAttributes redirect info
+     * @param authentication current authenticated user
+     * @return reslt view
+     */
     @PostMapping
     public RedirectView uploadFile(@RequestParam MultipartFile fileUpload, RedirectAttributes redirectAttributes, Authentication authentication) {
         File file = new File();

@@ -1,5 +1,6 @@
 package com.udacity.jwdnd.course1.cloudstorage;
 
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -18,6 +19,6 @@ public class ResultPage {
     }
 
     public void OK() {
-        backToLoginButton.click();
+        backToLoginButton.sendKeys(Keys.ENTER);
     }
 }

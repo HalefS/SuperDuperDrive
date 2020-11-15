@@ -24,6 +24,13 @@ public class NoteController {
         this.userService = userService;
     }
 
+    /**
+     * Creates and add new note to the database
+     * @param note note object from the view
+     * @param redirectAttributes redirect information
+     * @param authentication current authenticated user
+     * @return result view
+     */
     @PostMapping
     public RedirectView addNote(@ModelAttribute("noteForm") Note note, RedirectAttributes redirectAttributes, Authentication authentication) {
         // note already exists (update)
@@ -42,6 +49,13 @@ public class NoteController {
         return new RedirectView("/result");
     }
 
+    /**
+     * Delete a note from the database given the id
+     * @param id note id
+     * @param redirectAttributes redirect info
+     * @param authentication current authenticated user
+     * @return result view
+     */
     @GetMapping("/{id}/delete")
     @PreAuthorize("@userService.getUsernameFromId(@noteService.getUserId(#id)).equals(#authentication.getName())")
     public RedirectView deleteNote(@PathVariable int id, RedirectAttributes redirectAttributes, Authentication authentication) {
